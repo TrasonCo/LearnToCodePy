@@ -41,12 +41,12 @@ def main():
     Main function for the program
     """
     # Countdown to Repair
-    x = 0
-    fishCaught = 0
+    repairCounter = 0
+    fishCounter = 0
 
     # Max cast is 1.9 secs
     # Base time it will always cast at
-    castingBaseTime = 1.0
+    castingBaseTime = 1.2
     # Max random amount of time to add to the base
     castingRandom = .4
 
@@ -55,9 +55,6 @@ def main():
 
     # Adding randomness to the wait times for the animations
     animationSleepTime = .1 + (.1 * random.random())
-
-    # Randomly will move right or left to keep from AFKing
-    moveDirection = ["a", "d"]
 
     # Free cam key
     freeCamKey = "alt"
@@ -111,10 +108,11 @@ def main():
         pyautogui.mouseUp()
 
         # Looking for the fish icon, doing forced garbage collection
-        while pyautogui.locate("imgs/fishIcon.png", sctImg, grayscale=True, confidence=.55) is None:
+        while pyautogui.locate("imgs/fishIcon.png", sctImg, grayscale=True, confidence=.7) is None:
             gc.collect()
             # Screenshot
             sctImg = Image.fromarray(np.array(sct.grab(mssRegion)))
+
 
         # Hooking the fish
         print(Colors.LIGHT_GREEN + "Fish Hooked")
@@ -142,15 +140,18 @@ def main():
 
         pyautogui.mouseUp()
         time.sleep(animationSleepTime)
-        fishCaught = fishCaught + 1
-        print(Colors.LIGHT_BLUE + "Caught Fish: " + str(fishCaught))
+        fishCounter = fishCounter + 1
+        print(Colors.LIGHT_BLUE + "Caught Fish: " + str(fishCounter))
 
         # 20% chance to move to avoid AFK timer
         if random.randint(1, 5) == 5:
-            key = moveDirection[random.randint(0, 1)]
-            pyautogui.keyDown(key)
+            pyautogui.keyDown("a")
             time.sleep(.1)
-            pyautogui.keyUp(key)
+            pyautogui.keyUp("a")
+            time.sleep(0.5)
+            pyautogui.keyDown("d")
+            time.sleep(.1)
+            pyautogui.keyUp("d")
 
         time.sleep(animationSleepTime)
 
@@ -158,11 +159,10 @@ def main():
         print(Colors.LIGHT_GREEN + "Released Free Look Button")
         pydirectinput.keyUp(freeCamKey)
 
-
         # Repairing
-        x = x + 1
-        print("Repair after " + str(50 - x) + " more catch(es).")
-        if x == 50:
+        fishCounter = fishCounter + 1
+        print("Repair after " + str(1 - fishCounter) + " more catch(es).")
+        if fishCounter == 1:
             print("Repairing...")
             time.sleep(3)
             pyautogui.keyDown("tab")
@@ -193,10 +193,10 @@ def main():
                     time.sleep(.1)
                     pyautogui.keyUp("f3")
                     time.sleep(4)
-            else:
-                pyautogui.keyDown("f3")
-                time.sleep(.1)
-                pyautogui.keyUp("f3")
+                else:
+                    pyautogui.keyDown("f3")
+                    time.sleep(.1)
+                    pyautogui.keyUp("f3")
         # End Repairing
 
 
